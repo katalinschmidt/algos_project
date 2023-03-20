@@ -1,8 +1,8 @@
-import React from 'react';
 import { useState } from 'react';
+import './SortingVisualizer.css';
 
 // TODO: Replace hardcoding
-const LENGTH_OF_ARRAY = 100;
+const LENGTH_OF_ARRAY = 10;
 
 function generateRandomIntFromRange(min, max) {
     // Allows range to start with any int and includes min & max as potential return values
@@ -29,18 +29,24 @@ function createNewArray() {
 function SortingVisualizer() {
     // Instantiate array
     const [array, setArray] = useState(createNewArray());
+
+    function handleRegenerateClick() {
+        setArray(createNewArray());
+    }
+
     // Return component for rendering
     return (
         <div className="array-container">
             {/* Map each element in array to div for styling */}
             {array.map((value, idx) => (
-                <div>
+                <div
                     className="array-bar"
                     key={idx}
-                    text={value}
+                >
+                    <span>{value}</span>
                 </div>
             ))}
-            <button onClick={createNewArray()}>Generate New Dataset</button>
+            <button onClick={handleRegenerateClick}>Generate New Dataset</button>
         </div>
     )
 }
