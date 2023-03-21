@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './SortingVisualizer.css';
+import quickSort from './SortingAlgorithms.jsx';
 
 // TODO: Replace hardcoding
 const LENGTH_OF_ARRAY = 100;
@@ -30,16 +31,22 @@ function createNewArray() {
 }
 
 function SortingVisualizer() {
-    // Instantiate array
+    // Instantiate state value & display bar graph on render
     const [array, setArray] = useState(createNewArray());
 
     function handleRegenerateClick() {
         setArray(createNewArray());
     }
 
+    function handleQuickSortClick() {
+        const sortedArray = quickSort([...array]);
+        setArray(sortedArray);
+    }
+
     // Return component for rendering
     return (
         <div>
+            {/* Display array */}
             <div className="array-container">
                 {/* Map each element in array to div for styling */}
                 {array.map((value, idx) => (
@@ -48,14 +55,16 @@ function SortingVisualizer() {
                         className="array-item"
                         style={{
                             height: `${(value / MAX_RANDOM_INT) * 100}%`,
-                            width: `calc(75vw * 0.75 / ${LENGTH_OF_ARRAY})`
+                            width: `calc(75vw * 0.75 / ${LENGTH_OF_ARRAY})`,
                         }}
                     >
                         <span>{value}</span>
                     </div>
                 ))}
             </div>
+            {/* Display user controls */}
             <button onClick={handleRegenerateClick}>Generate New Dataset</button>
+            <button onClick={handleQuickSortClick}>Quick Sort</button>
         </div>
     )
 }
