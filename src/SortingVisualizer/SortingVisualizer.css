@@ -1,9 +1,14 @@
 .array-container {
-  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  height: 75vh;
+  width: 75vw;
+  position: fixed;
+  right: 5vw;
 }
 
-.array-bar {
-  width: 100px;
-  display: inline-block;
-  margin: 0 1px;
+.array-item {
+  flex-grow: 1;
+  background-color: pink;
+  margin-right: 2px;
 }

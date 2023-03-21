@@ -2,12 +2,15 @@ import { useState } from 'react';
 import './SortingVisualizer.css';
 
 // TODO: Replace hardcoding
-const LENGTH_OF_ARRAY = 10;
+const LENGTH_OF_ARRAY = 100;
 
-function generateRandomIntFromRange(min, max) {
+const MIN_RANDOM_INT = 10;
+const MAX_RANDOM_INT = 500;
+
+function generateRandomIntFromRange() {
     // Allows range to start with any int and includes min & max as potential return values
     // https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
-    return Math.floor(Math.random() * (max - min + 1) + min)
+    return Math.floor(Math.random() * (MAX_RANDOM_INT - MIN_RANDOM_INT + 1) + MIN_RANDOM_INT)
 }
 
 function createNewArray() {
@@ -19,7 +22,7 @@ function createNewArray() {
     for (let i = 0; i < LENGTH_OF_ARRAY; i++) {
         array.push(
             // Generate random int
-            generateRandomIntFromRange(10, 1000)
+            generateRandomIntFromRange()
         )
     }
 
@@ -36,16 +39,22 @@ function SortingVisualizer() {
 
     // Return component for rendering
     return (
-        <div className="array-container">
-            {/* Map each element in array to div for styling */}
-            {array.map((value, idx) => (
-                <div
-                    className="array-bar"
-                    key={idx}
-                >
-                    <span>{value}</span>
-                </div>
-            ))}
+        <div>
+            <div className="array-container">
+                {/* Map each element in array to div for styling */}
+                {array.map((value, idx) => (
+                    <div
+                        key={idx}
+                        className="array-item"
+                        style={{
+                            height: `${(value / MAX_RANDOM_INT) * 100}%`,
+                            width: `calc(75vw * 0.75 / ${LENGTH_OF_ARRAY})`
+                        }}
+                    >
+                        <span>{value}</span>
+                    </div>
+                ))}
+            </div>
             <button onClick={handleRegenerateClick}>Generate New Dataset</button>
         </div>
     )
