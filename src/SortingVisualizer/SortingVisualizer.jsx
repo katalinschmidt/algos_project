@@ -30,6 +30,48 @@ function createNewArray() {
     return array;
 }
 
+function visualizeQuickSort(array) {
+    const animations = quickSort(array)
+
+    for (let i = 0; i < animations.length; i++) {
+        // Get the bars currently on display
+        const arrayBars = document.getElementsByClassName('array-item');
+        
+        const [isCompare, barOneIdx, barTwoIdx] = animations[i];
+        if (isCompare) {
+            // Highlight
+            setTimeout(() => {
+                arrayBars[barOneIdx].style.backgroundColor = "orange";
+                arrayBars[barTwoIdx].style.backgroundColor = "orange";
+            }, i * 20);
+            // Remove
+            setTimeout(() => {
+                arrayBars[barOneIdx].style.backgroundColor = "pink";
+                arrayBars[barTwoIdx].style.backgroundColor = "pink";
+            }, i * 21);
+        }
+        else {
+            // Highlight
+            setTimeout(() => {
+                arrayBars[barOneIdx].style.backgroundColor = "green";
+                arrayBars[barTwoIdx].style.backgroundColor = "green";
+                // Change height to visualize swap
+                const barOneHeight = arrayBars[barOneIdx].style.height;
+                const barTwoHeight = arrayBars[barTwoIdx].style.height;
+                arrayBars[barOneIdx].style.height = barTwoHeight;
+                arrayBars[barTwoIdx].style.height = barOneHeight;
+            }, i * 20);
+            // Remove
+            setTimeout(() => {
+                arrayBars[barOneIdx].style.backgroundColor = "pink";
+                arrayBars[barTwoIdx].style.backgroundColor = "pink";
+            }, i * 21);
+        }
+        // Pause
+        setTimeout(() => {}, i * 20);
+    }
+}
+
 function SortingVisualizer() {
     // Instantiate state value & display bar graph on render
     const [array, setArray] = useState(createNewArray());
@@ -39,8 +81,7 @@ function SortingVisualizer() {
     }
 
     function handleQuickSortClick() {
-        const sortedArray = quickSort([...array]);
-        setArray(sortedArray);
+        visualizeQuickSort(array);
     }
 
     // Return component for rendering
@@ -54,11 +95,11 @@ function SortingVisualizer() {
                         key={idx}
                         className="array-item"
                         style={{
+                            // height: `${(value / MAX_RANDOM_INT) * (window.innerHeight * 0.75)}px`,
                             height: `${(value / MAX_RANDOM_INT) * 100}%`,
                             width: `calc(75vw * 0.75 / ${LENGTH_OF_ARRAY})`,
                         }}
                     >
-                        <span>{value}</span>
                     </div>
                 ))}
             </div>
