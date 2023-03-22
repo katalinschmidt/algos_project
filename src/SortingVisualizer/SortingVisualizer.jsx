@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './SortingVisualizer.css';
-import quickSort from './SortingAlgorithms.jsx';
+import quickSort from './SortingAlgorithms.js';
 
 // TODO: Replace hardcoding
 const LENGTH_OF_ARRAY = 100;
