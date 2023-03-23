@@ -1,12 +1,22 @@
 import { useState } from 'react';
 import './SortingVisualizer.css';
 import quickSort from './SortingAlgorithms.js';
+import testQuickSort from './SortingAlgorithmsTests.js';
 
-// TODO: Replace hardcoding
-const LENGTH_OF_ARRAY = 100;
+const LENGTH_OF_ARRAY = 10;
 
-const MIN_RANDOM_INT = 10;
-const MAX_RANDOM_INT = 500;
+const MIN_RANDOM_INT = 1;
+const MAX_RANDOM_INT = 10;
+
+const ANIMATION_SPEED_MS = 500;
+
+/*
+ * FIXMEs:
+ * -- Highlight & remove timing
+ * -- Generate new data btn click needs to stop sorts in progress
+ * -- QuickSort failing test with single item in array, e.g. [[5]] -> [5] !=== 5
+ * -- Animations bug "Cannot read properties of undefined (reading 'style')"
+*/
 
 function generateRandomIntFromRange() {
     // Allows range to start with any int and includes min & max as potential return values
@@ -30,10 +40,16 @@ function createNewArray() {
     return array;
 }
 
-function visualizeQuickSort(array) {
-    const animations = quickSort(array)
+function setBarColor(bars = [], color = "pink") {
+    for (let i = 0; i < bars.length; i++) {
+        bars[i].style.backgroundColor = color;
+    }
+}
 
-    for (let i = 0; i < animations.length; i++) {
+function visualizeQuickSort(array) {
+    const [_, animations] = quickSort(array);
+
+    for (let i = 1; i < animations.length; i++) {
         // Get the bars currently on display
         const arrayBars = document.getElementsByClassName('array-item');
         
@@ -41,34 +57,33 @@ function visualizeQuickSort(array) {
         if (isCompare) {
             // Highlight
             setTimeout(() => {
-                arrayBars[barOneIdx].style.backgroundColor = "orange";
-                arrayBars[barTwoIdx].style.backgroundColor = "orange";
-            }, i * 20);
-            // Remove
+                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "orange");
+            }, i * ANIMATION_SPEED_MS);
+            // Remove highlight
             setTimeout(() => {
-                arrayBars[barOneIdx].style.backgroundColor = "pink";
-                arrayBars[barTwoIdx].style.backgroundColor = "pink";
-            }, i * 21);
+                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "pink");
+            }, i * (ANIMATION_SPEED_MS * 1.5));
         }
         else {
             // Highlight
             setTimeout(() => {
-                arrayBars[barOneIdx].style.backgroundColor = "green";
-                arrayBars[barTwoIdx].style.backgroundColor = "green";
+                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "green");
+                // Change value
+                const barOneValue = arrayBars[barOneIdx].textContent;
+                const barTwoValue = arrayBars[barTwoIdx].textContent;
+                arrayBars[barOneIdx].textContent = barTwoValue;
+                arrayBars[barTwoIdx].textContent = barOneValue;
                 // Change height to visualize swap
                 const barOneHeight = arrayBars[barOneIdx].style.height;
                 const barTwoHeight = arrayBars[barTwoIdx].style.height;
                 arrayBars[barOneIdx].style.height = barTwoHeight;
                 arrayBars[barTwoIdx].style.height = barOneHeight;
-            }, i * 20);
-            // Remove
+            }, i * ANIMATION_SPEED_MS);
+            // Remove highlight
             setTimeout(() => {
-                arrayBars[barOneIdx].style.backgroundColor = "pink";
-                arrayBars[barTwoIdx].style.backgroundColor = "pink";
-            }, i * 21);
+                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "pink");
+            }, i * (ANIMATION_SPEED_MS * 1.5));
         }
-        // Pause
-        setTimeout(() => {}, i * 20);
     }
 }
 
@@ -81,6 +96,7 @@ function SortingVisualizer() {
     }
 
     function handleQuickSortClick() {
+        testQuickSort();
         visualizeQuickSort(array);
     }
 
@@ -100,6 +116,7 @@ function SortingVisualizer() {
                             width: `calc(75vw * 0.75 / ${LENGTH_OF_ARRAY})`,
                         }}
                     >
+                        <span>{value}</span>
                     </div>
                 ))}
             </div>

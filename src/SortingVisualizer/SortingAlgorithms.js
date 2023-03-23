@@ -7,7 +7,7 @@
 */
 function quickSort(array = [], animations = [],  startIdx = 0, endIdx = array.length - 1) {
     // Track indices for visualizer
-    animations.push([true, startIdx, endIdx])
+    animations.push([true, startIdx, endIdx]);
     
     // Base case - array is empty or one element
     if (startIdx >= endIdx) {
@@ -26,14 +26,14 @@ function quickSort(array = [], animations = [],  startIdx = 0, endIdx = array.le
     while (leftIdx <= rightIdx) {
         // Increment leftIdx until we find the array value that is greater than the pivot value
         while (array[leftIdx] < pivotValue) {
-            animations.push([true, leftIdx, pivotIdx])
+            animations.push([true, leftIdx, pivotIdx]);
             // Move pointer to reduce array, i.e. to make progress towards base case
             leftIdx++;
         }
 
         // Decrement rightIdx until we find the array value that is less than the pivot value
         while (array[rightIdx] > pivotValue) {
-            animations.push([true, rightIdx, pivotIdx])
+            animations.push([true, rightIdx, pivotIdx]);
             // Move pointer to reduce array, i.e. to make progress towards base case
             rightIdx--;
         }
@@ -42,9 +42,9 @@ function quickSort(array = [], animations = [],  startIdx = 0, endIdx = array.le
         // and the array value at rightIdx that is less than our pivot value,
         // we swap the array values
         if (leftIdx <= rightIdx) {
-            animations.push([false, leftIdx, rightIdx])
+            animations.push([false, leftIdx, rightIdx]);
             // Swap
-            const temp = array[leftIdx]
+            const temp = array[leftIdx];
             array[leftIdx] = array[rightIdx];
             array[rightIdx] = temp;
             // Increment & decrement pointers reduce array, i.e. to make progress towards base case
@@ -56,8 +56,8 @@ function quickSort(array = [], animations = [],  startIdx = 0, endIdx = array.le
     // Recurse
     quickSort(array, animations, startIdx, rightIdx);
     quickSort(array, animations, leftIdx, endIdx);
-    // Return indices for visualizer
-    return animations;
+
+    return [array, animations];
 }
 
 export default quickSort;
