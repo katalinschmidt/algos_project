@@ -2,6 +2,8 @@ import { useState } from 'react';
 import './SortingVisualizer.css';
 import quickSort from './SortingAlgorithms.js';
 import testQuickSort from './SortingAlgorithmsTests.js';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const LENGTH_OF_ARRAY = 10;
 
@@ -9,45 +11,53 @@ const MIN_RANDOM_INT = 1;
 const MAX_RANDOM_INT = 10;
 
 const ANIMATION_SPEED_MS = 500;
+const DEFAULT_BAR_COLOR = "pink";
 
 /*
  * FIXMEs:
  * -- Highlight & remove timing
  * -- Generate new data btn click needs to stop sorts in progress
  * -- QuickSort failing test with single item in array, e.g. [[5]] -> [5] !=== 5
- * -- Animations bug "Cannot read properties of undefined (reading 'style')"
 */
 
-function generateRandomIntFromRange() {
+function generateRandomIntFromRange(min, max) {
     // Allows range to start with any int and includes min & max as potential return values
     // https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
-    return Math.floor(Math.random() * (MAX_RANDOM_INT - MIN_RANDOM_INT + 1) + MIN_RANDOM_INT)
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 function createNewArray() {
-    // Instantiate the array
-    // const rather than let because value is mutable, but we don't want the variable to be reassigned (like i below)
     const array = [];
 
-    // Create an array of random ints
     for (let i = 0; i < LENGTH_OF_ARRAY; i++) {
         array.push(
-            // Generate random int
-            generateRandomIntFromRange()
+            generateRandomIntFromRange(MIN_RANDOM_INT, MAX_RANDOM_INT)
         )
     }
 
     return array;
 }
 
-function setBarColor(bars = [], color = "pink") {
+function setBarColor(bars = [], color = DEFAULT_BAR_COLOR) {
     for (let i = 0; i < bars.length; i++) {
-        bars[i].style.backgroundColor = color;
+        try {
+            bars[i].style.backgroundColor = color;
+        }
+        catch (error) {
+            if (error instanceof TypeError) {
+                // Handling animations bug - inspected in DOM & it doesn't seem that we are actually missing a bar.
+                console.log(`Caught TypeError: Failed to style ${bars[i]}.`);
+            } 
+            else {
+                console.log("Caught exception:", error.message);
+            }
+        }
     }
 }
 
 function visualizeQuickSort(array) {
-    const [_, animations] = quickSort(array);
+    // const [_, animations] = quickSort(array);
+    const [_, animations] = quickSort([1, 4, 6, 8, 3]);
 
     for (let i = 1; i < animations.length; i++) {
         // Get the bars currently on display
@@ -88,21 +98,30 @@ function visualizeQuickSort(array) {
 }
 
 function SortingVisualizer() {
-    // Instantiate state value & display bar graph on render
-    const [array, setArray] = useState(createNewArray());
-
+    // Instantiate state values & display bar graph & code on render
+    // const [array, setArray] = useState(createNewArray());
+    const [array, setArray] = useState([1, 4, 6, 8, 3]);
+    const [displayCode, setDisplayCode] = useState(createNewArray.toString());
+    
     function handleRegenerateClick() {
         setArray(createNewArray());
+        setDisplayCode(createNewArray.toString());
     }
 
     function handleQuickSortClick() {
-        testQuickSort();
+        // testQuickSort();
         visualizeQuickSort(array);
+        setDisplayCode(quickSort.toString());
     }
 
     // Return component for rendering
     return (
-        <div>
+        <div className="visualizer-app">
+            {/* Display user controls */}
+            <div className="user-controls-container">
+                <button onClick={handleRegenerateClick}>Generate New Dataset</button>
+                <button onClick={handleQuickSortClick}>Quick Sort</button>
+            </div>
             {/* Display array */}
             <div className="array-container">
                 {/* Map each element in array to div for styling */}
@@ -113,16 +132,18 @@ function SortingVisualizer() {
                         style={{
                             // height: `${(value / MAX_RANDOM_INT) * (window.innerHeight * 0.75)}px`,
                             height: `${(value / MAX_RANDOM_INT) * 100}%`,
-                            width: `calc(75vw * 0.75 / ${LENGTH_OF_ARRAY})`,
+                            width: `calc(75vw * 0.5 / ${LENGTH_OF_ARRAY})`,
                         }}
                     >
                         <span>{value}</span>
                     </div>
                 ))}
             </div>
-            {/* Display user controls */}
-            <button onClick={handleRegenerateClick}>Generate New Dataset</button>
-            <button onClick={handleQuickSortClick}>Quick Sort</button>
+            <div className="code-container">
+                <SyntaxHighlighter language="javascript" style={dark}>
+                    {displayCode}
+                </SyntaxHighlighter>
+            </div>
         </div>
     )
 }
