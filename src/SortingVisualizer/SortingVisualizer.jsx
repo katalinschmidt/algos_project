@@ -5,17 +5,17 @@ import testQuickSort from './SortingAlgorithmsTests.js';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-const LENGTH_OF_ARRAY = 10;
+const LENGTH_OF_ARRAY = 50;
 
 const MIN_RANDOM_INT = 1;
-const MAX_RANDOM_INT = 10;
+const MAX_RANDOM_INT = 100;
 
-const ANIMATION_SPEED_MS = 500;
+const ANIMATION_SPEED_MS = 300;
+
 const DEFAULT_BAR_COLOR = "pink";
 
 /*
  * FIXMEs:
- * -- Highlight & remove timing
  * -- Generate new data btn click needs to stop sorts in progress
  * -- QuickSort failing test with single item in array, e.g. [[5]] -> [5] !=== 5
 */
@@ -56,8 +56,7 @@ function setBarColor(bars = [], color = DEFAULT_BAR_COLOR) {
 }
 
 function visualizeQuickSort(array) {
-    // const [_, animations] = quickSort(array);
-    const [_, animations] = quickSort([1, 4, 6, 8, 3]);
+    const [_, animations] = quickSort([...array]);
 
     for (let i = 1; i < animations.length; i++) {
         // Get the bars currently on display
@@ -67,16 +66,16 @@ function visualizeQuickSort(array) {
         if (isCompare) {
             // Highlight
             setTimeout(() => {
-                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "orange");
+                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "orange");        
             }, i * ANIMATION_SPEED_MS);
             // Remove highlight
             setTimeout(() => {
-                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "pink");
-            }, i * (ANIMATION_SPEED_MS * 1.5));
+                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], DEFAULT_BAR_COLOR);
+            }, i * ANIMATION_SPEED_MS + 100);
         }
         else {
-            // Highlight
             setTimeout(() => {
+                // Highlight
                 setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "green");
                 // Change value
                 const barOneValue = arrayBars[barOneIdx].textContent;
@@ -89,18 +88,17 @@ function visualizeQuickSort(array) {
                 arrayBars[barOneIdx].style.height = barTwoHeight;
                 arrayBars[barTwoIdx].style.height = barOneHeight;
             }, i * ANIMATION_SPEED_MS);
-            // Remove highlight
             setTimeout(() => {
-                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], "pink");
-            }, i * (ANIMATION_SPEED_MS * 1.5));
+                // Remove highlight
+                setBarColor([arrayBars[barOneIdx], arrayBars[barTwoIdx]], DEFAULT_BAR_COLOR);
+            }, i * ANIMATION_SPEED_MS + 100);
         }
     }
 }
 
 function SortingVisualizer() {
     // Instantiate state values & display bar graph & code on render
-    // const [array, setArray] = useState(createNewArray());
-    const [array, setArray] = useState([1, 4, 6, 8, 3]);
+    const [array, setArray] = useState(createNewArray());
     const [displayCode, setDisplayCode] = useState(createNewArray.toString());
     
     function handleRegenerateClick() {

@@ -10,7 +10,7 @@ function quickSort(array = [], animations = [],  startIdx = 0, endIdx = array.le
     // Track indices for visualizer
     animations.push([true, startIdx, endIdx]);
     
-    // Base case - array is empty or one element
+    // Base case - array is already sorted
     if (startIdx >= endIdx) {
         return array;
     }
@@ -48,7 +48,7 @@ function quickSort(array = [], animations = [],  startIdx = 0, endIdx = array.le
             const temp = array[leftIdx];
             array[leftIdx] = array[rightIdx];
             array[rightIdx] = temp;
-            // Increment & decrement pointers reduce array, i.e. to make progress towards base case
+            // Increment & decrement pointers to reduce array, i.e. to make progress towards base case
             leftIdx++;
             rightIdx--;
         }
