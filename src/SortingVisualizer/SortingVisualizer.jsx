@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import './SortingVisualizer.css';
-import quickSort from './SortingAlgorithms.js';
-import testQuickSort from './SortingAlgorithmsTests.js';
+import { createNewArray } from './utils.js'
+import { quickSort, mergeSort } from './SortingAlgorithms.js';
+import { testQuickSort, testMergeSort } from './SortingAlgorithmsTests.js';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -10,33 +11,14 @@ const LENGTH_OF_ARRAY = 50;
 const MIN_RANDOM_INT = 1;
 const MAX_RANDOM_INT = 100;
 
-const ANIMATION_SPEED_MS = 300;
-
+const ANIMATION_SPEED_MS = 700;
 const DEFAULT_BAR_COLOR = "pink";
 
 /*
  * FIXMEs:
  * -- Generate new data btn click needs to stop sorts in progress
- * -- QuickSort failing test with single item in array, e.g. [[5]] -> [5] !=== 5
+ * 
 */
-
-function generateRandomIntFromRange(min, max) {
-    // Allows range to start with any int and includes min & max as potential return values
-    // https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
-    return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-function createNewArray() {
-    const array = [];
-
-    for (let i = 0; i < LENGTH_OF_ARRAY; i++) {
-        array.push(
-            generateRandomIntFromRange(MIN_RANDOM_INT, MAX_RANDOM_INT)
-        )
-    }
-
-    return array;
-}
 
 function setBarColor(bars = [], color = DEFAULT_BAR_COLOR) {
     for (let i = 0; i < bars.length; i++) {
@@ -96,20 +78,40 @@ function visualizeQuickSort(array) {
     }
 }
 
+function visualizeMergeSort(array) {
+    // const [_, animations] = mergeSort([...array]);
+    const [sortedArray, animations] = mergeSort([10, 1, 7, 6, 10, 8, 3, 6, 5, 4]);
+    console.log("sortedArray", sortedArray);
+
+    for (let i = 1; i < animations.length; i++) {
+        // Get the bars currently on display
+        const arrayBars = document.getElementsByClassName('array-item');
+        
+        // TODO: Implement animation
+    }
+}
+
 function SortingVisualizer() {
     // Instantiate state values & display bar graph & code on render
-    const [array, setArray] = useState(createNewArray());
+    // const [array, setArray] = useState(createNewArray(LENGTH_OF_ARRAY, MIN_RANDOM_INT, MAX_RANDOM_INT));
+    const [array, setArray] = useState([10, 1, 7, 6, 10, 8, 3, 6, 5, 4]);
     const [displayCode, setDisplayCode] = useState(createNewArray.toString());
     
     function handleRegenerateClick() {
-        setArray(createNewArray());
+        setArray(createNewArray(LENGTH_OF_ARRAY, MIN_RANDOM_INT, MAX_RANDOM_INT));
         setDisplayCode(createNewArray.toString());
     }
 
     function handleQuickSortClick() {
-        // testQuickSort();
+        testQuickSort();
         visualizeQuickSort(array);
         setDisplayCode(quickSort.toString());
+    }
+
+    function handleMergeSortClick() {
+        testMergeSort();
+        visualizeMergeSort(array);
+        setDisplayCode(mergeSort.toString());
     }
 
     // Return component for rendering
@@ -119,6 +121,7 @@ function SortingVisualizer() {
             <div className="user-controls-container">
                 <button onClick={handleRegenerateClick}>Generate New Dataset</button>
                 <button onClick={handleQuickSortClick}>Quick Sort</button>
+                <button onClick={handleMergeSortClick}>Merge Sort</button>
             </div>
             {/* Display array */}
             <div className="array-container">
