@@ -43,7 +43,7 @@ export function testQuickSort() {
         console.assert(arraysAreEqual(javaScriptSortedArray, quickSortedArray) === true, "Expected arraysAreEqual() to return True for quickSort");  
     }
 
-    console.log("* * * Quick sort test complete! * * *")
+    console.log("* * * Quick sort test complete! * * *");
 }
 
 export function testMergeSort() {
@@ -55,5 +55,5 @@ export function testMergeSort() {
         console.assert(arraysAreEqual(javaScriptSortedArray, mergeSortedArray) === true, "Expected arraysAreEqual() to return True for mergeSort");  
     }
 
-    console.log("* * * Merge sort test complete! * * *")
+    console.log("* * * Merge sort test complete! * * *");
 }

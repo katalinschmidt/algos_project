@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './SortingVisualizer.css';
 import { createNewArray } from './utils.js'
 import { quickSort, mergeSort } from './SortingAlgorithms.js';
@@ -42,7 +42,7 @@ function visualizeQuickSort(array) {
 
     for (let i = 1; i < animations.length; i++) {
         // Get the bars currently on display
-        const arrayBars = document.getElementsByClassName('array-item');
+        const arrayBars = document.getElementsByClassName('main-array-bar-value');
         
         const [isCompare, barOneIdx, barTwoIdx] = animations[i];
         if (isCompare) {
@@ -79,13 +79,11 @@ function visualizeQuickSort(array) {
 }
 
 function visualizeMergeSort(array) {
-    // const [_, animations] = mergeSort([...array]);
-    const [sortedArray, animations] = mergeSort([10, 1, 7, 6, 10, 8, 3, 6, 5, 4]);
-    console.log("sortedArray", sortedArray);
+    const [_, animations] = mergeSort([...array]);
 
     for (let i = 1; i < animations.length; i++) {
         // Get the bars currently on display
-        const arrayBars = document.getElementsByClassName('array-item');
+        const arrayBars = document.getElementsByClassName('main-array-bar-value');
         
         // TODO: Implement animation
     }
@@ -93,10 +91,20 @@ function visualizeMergeSort(array) {
 
 function SortingVisualizer() {
     // Instantiate state values & display bar graph & code on render
-    // const [array, setArray] = useState(createNewArray(LENGTH_OF_ARRAY, MIN_RANDOM_INT, MAX_RANDOM_INT));
-    const [array, setArray] = useState([10, 1, 7, 6, 10, 8, 3, 6, 5, 4]);
+    const [array, setArray] = useState(createNewArray(LENGTH_OF_ARRAY, MIN_RANDOM_INT, MAX_RANDOM_INT));
+    const [tempArray, setTempArray] = useState(createNewArray(LENGTH_OF_ARRAY, MIN_RANDOM_INT, MAX_RANDOM_INT));
+    // const [tempArray, setTempArray] = useState([]);
     const [displayCode, setDisplayCode] = useState(createNewArray.toString());
-    
+    const [logMessages, setLogMessages] = useState([]);
+
+    // Publish logs to div:
+    useEffect(() => {
+      const originalLog = console.log;
+      console.log = function(...args) {
+        setLogMessages(prevLogMessages => [args.join(' '), ...prevLogMessages]);
+      };
+    }, []);
+
     function handleRegenerateClick() {
         setArray(createNewArray(LENGTH_OF_ARRAY, MIN_RANDOM_INT, MAX_RANDOM_INT));
         setDisplayCode(createNewArray.toString());
@@ -123,24 +131,49 @@ function SortingVisualizer() {
                 <button onClick={handleQuickSortClick}>Quick Sort</button>
                 <button onClick={handleMergeSortClick}>Merge Sort</button>
             </div>
-            {/* Display array */}
+            {/* Display arrays */}
             <div className="array-container">
-                {/* Map each element in array to div for styling */}
-                {array.map((value, idx) => (
-                    <div
-                        key={idx}
-                        className="array-item"
-                        style={{
-                            // height: `${(value / MAX_RANDOM_INT) * (window.innerHeight * 0.75)}px`,
-                            height: `${(value / MAX_RANDOM_INT) * 100}%`,
-                            width: `calc(75vw * 0.5 / ${LENGTH_OF_ARRAY})`,
-                        }}
-                    >
-                        <span>{value}</span>
-                    </div>
-                ))}
+                <div id="main-array">
+                    {/* Map each element in array to div for styling */}
+                    {array.map((value, idx) => (
+                        <div key={idx}>
+                            <div className="main-array-bar-idx">{idx}</div>
+                            <div
+                                className="main-array-bar-value"
+                                style={{
+                                    height: `${(value / MAX_RANDOM_INT) * 100}%`,
+                                    width: `calc(75vw * 0.5 / ${LENGTH_OF_ARRAY})`,
+                                }}
+                            >
+                                <span>{value}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div id="temp-array">
+                    {/* Map each element in array to div for styling */}
+                    {tempArray.map((value, idx) => (
+                        <div key={idx}>
+                            <div className="temp-array-bar-idx">{idx}</div>
+                            <div
+                                className="temp-array-bar-value"
+                                style={{
+                                    height: `${(value / MAX_RANDOM_INT) * 100}%`,
+                                    width: `calc(75vw * 0.5 / ${LENGTH_OF_ARRAY})`,
+                                }}
+                            >
+                                <span>{value}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
             <div className="code-container">
+                <div className="console-messages">
+                    {logMessages.map((msg, idx) => (
+                        <div key={idx}>{msg}</div>
+                    ))}
+                </div>
                 <SyntaxHighlighter language="javascript" style={dark}>
                     {displayCode}
                 </SyntaxHighlighter>

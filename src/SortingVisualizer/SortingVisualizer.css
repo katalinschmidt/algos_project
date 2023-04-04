@@ -1,28 +1,72 @@
 .visualizer-app {
-  display: flex;
-  flex-direction: row;
-  gap: 10px; /* Add a 10px gap between the child divs */
-  height: 100vh;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    /* Add spacing between children divs */
+    gap: 2%;
 }
 
-.user-controls-container {
-  flex: 1;
-  width: 25%;
-}
-
-.array-container,
-.code-container {
-  flex: 1;
-  width: 37.5%;
+.user-controls-container > button {
+    /* Expand buttons to be the same size in width */
+    width: 100%;
+    /* Add spacing between buttons */
+    margin-top: 10%;
 }
 
 .array-container {
-  display: flex;
-  justify-content: space-evenly;
+    height: 100vh;
 }
 
-.array-item {
-  flex-grow: 1;
-  background-color: pink;
-  margin-right: 2px;
+/* Display divs in array as a bar graph */
+.array-container > div {
+    display: flex;
+    height: 50%;
+    /* Add spacing between arrays */
+    margin-bottom: 10%;
+}
+
+.main-array-bar-value {
+    background-color: pink;
+    /* Add spacing between bars */
+    margin-right: 2px;
+}
+
+.temp-array-bar-value {
+    background-color: orange;
+    /* Add spacing between bars */
+    margin-right: 2px;
+}
+
+.code-container {
+    width: 30%;
+}
+
+.console-messages {
+    /* Use scrollbar when text outgrows div */
+    overflow: auto;
+    height: 30%;
+}
+
+pre {
+    /* Use scrollbar when text outgrows div */
+    overflow: auto;
+    height: 70%;
+}
+
+.console-messages {
+    /* Style div to match SyntaxHighlighter */
+    background: rgb(77, 64, 51);
+    border: 0.3em solid rgb(122, 102, 82);
+    border-radius: 0.5em;
+    box-shadow: black 1px 1px 0.5em inset;
+    padding: 1em;
+    margin: 0.5em 0px;
+    /* Style text */
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-size: 1em;
+    color: white;
+}
+
+.console-messages > div {
+    overflow-y: scroll;
 }
