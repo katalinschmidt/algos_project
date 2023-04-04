@@ -45,6 +45,7 @@
     /* Use scrollbar when text outgrows div */
     overflow: auto;
     height: 30%;
+    white-space: pre-wrap;
 }
 
 pre {

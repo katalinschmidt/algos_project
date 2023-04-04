@@ -1,12 +1,26 @@
+const animationInfo = {
+    isCompare: false,
+    isIdx: false,
+    barOneIdx: null,
+    barTwoIdx: null,
+    logMessage: ""
+}
+
 /*
  * Divide-and-conquer algorithm.
  * Partitions array into two sub-arrays & recursively sorts in-place. 
  * Other popular partitioning schemes: Lomuto, Hoare, randomized, median-of-three
 */
 export function quickSort(array = [], animations = [],  startIdx = 0, endIdx = array.length - 1) {
-    // Track indices for visualizer
-    animations.push([true, startIdx, endIdx]);
-    
+    // Track for visualizer
+    animations.push({
+      isCompare: true,
+      isIdx: true,
+      barOneIdx: startIdx,
+      barTwoIdx: endIdx,
+      logMessage: `Comparing indices ${startIdx} >= ${endIdx}\n`
+    });
+
     // Base case - array is already sorted
     if (startIdx >= endIdx) {
         return [array, animations];
@@ -21,26 +35,72 @@ export function quickSort(array = [], animations = [],  startIdx = 0, endIdx = a
     const pivotValue = array[pivotIdx];
 
     // Partition & sort sub-arrays
+    animations.push({
+      isCompare: true,
+      isIdx: true,
+      barOneIdx: leftIdx,
+      barTwoIdx: rightIdx,
+      logMessage: `Comparing indices ${leftIdx} <= ${rightIdx}\n`
+    });
     while (leftIdx <= rightIdx) {
         // Increment leftIdx until we find the array value that is greater than the pivot value
+        animations.push({
+          isCompare: true,
+          isIdx: false,
+          barOneIdx: leftIdx,
+          barTwoIdx: pivotIdx,
+          logMessage: `Comparing bar values ${array[leftIdx]} < ${pivotValue}\n`
+        });
         while (array[leftIdx] < pivotValue) {
-            animations.push([true, leftIdx, pivotIdx]);
             // Move pointer to reduce array, i.e. to make progress towards base case
             leftIdx++;
+            animations.push({
+              isCompare: true,
+              isIdx: true,
+              barOneIdx: leftIdx,
+              barTwoIdx: pivotIdx,
+              logMessage: `Incremented left pointer\nRecomparing bar values ${array[leftIdx]} < ${pivotValue}\n`
+            });
         }
 
         // Decrement rightIdx until we find the array value that is less than the pivot value
+        animations.push({
+          isCompare: true,
+          isIdx: true,
+          barOneIdx: rightIdx,
+          barTwoIdx: pivotIdx,
+          logMessage: `Comparing bar values ${array[rightIdx]} > ${pivotValue}`
+        });
         while (array[rightIdx] > pivotValue) {
-            animations.push([true, rightIdx, pivotIdx]);
             // Move pointer to reduce array, i.e. to make progress towards base case
             rightIdx--;
+            animations.push({
+              isCompare: true,
+              isIdx: true,
+              barOneIdx: rightIdx,
+              barTwoIdx: pivotIdx,
+              logMessage: `Decremented right pointer\nRecomparing bar values ${array[rightIdx]} > ${pivotValue}`
+            });
         }
 
         // Once we've found the array value at leftIdx that is greater than our pivot value,
         // and the array value at rightIdx that is less than our pivot value,
         // we swap the array values
+        animations.push({
+          isCompare: true,
+          isIdx: true,
+          barOneIdx: leftIdx,
+          barTwoIdx: rightIdx,
+          logMessage: `Comparing indices ${leftIdx} <= ${rightIdx}\n`
+        });
         if (leftIdx <= rightIdx) {
-            animations.push([false, leftIdx, rightIdx]);
+            animations.push({
+              isCompare: false,
+              isIdx: false,
+              barOneIdx: leftIdx,
+              barTwoIdx: rightIdx,
+              logMessage: `Swapping values ${array[leftIdx]} <-> ${array[rightIdx]}\n`
+            });
             // Swap
             const temp = array[leftIdx];
             array[leftIdx] = array[rightIdx];
@@ -48,6 +108,13 @@ export function quickSort(array = [], animations = [],  startIdx = 0, endIdx = a
             // Increment & decrement pointers to reduce array, i.e. to make progress towards base case
             leftIdx++;
             rightIdx--;
+            animations.push({
+              isCompare: true,
+              isIdx: true,
+              barOneIdx: leftIdx,
+              barTwoIdx: rightIdx,
+              logMessage: `Incremented left pointer & decremented right pointer\nRecomparing indices ${leftIdx} <= ${rightIdx}\n`
+            });
         }
     }
 
@@ -83,7 +150,8 @@ export function mergeSort(array = [], animations = [], startIdx = 0, endIdx = ar
     
     return [array, animations];
 }
-    
+
+
 function merge(array, animations, startIdx, middleIdx, endIdx) {
     let tempArray = [];
     
@@ -118,4 +186,9 @@ function merge(array, animations, startIdx, middleIdx, endIdx) {
     for (let i = startIdx; i <= endIdx; i++) {
         array[i] = tempArray[i - startIdx];
     }
+}
+
+
+export function bubbleSort(array = [], animations = [], startIdx = 0, endIdx = array.length - 1) {
+
 }

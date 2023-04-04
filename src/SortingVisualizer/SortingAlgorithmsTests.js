@@ -1,4 +1,4 @@
-import { quickSort, mergeSort } from './SortingAlgorithms.js';
+import { quickSort, mergeSort, bubbleSort } from './SortingAlgorithms.js';
 import { generateRandomIntFromRange, createNewArray } from './utils.js'
 
 const NUM_TESTING_ARRAYS = 100;
@@ -34,26 +34,14 @@ function getJavascriptSortedArray(array) {
     return array.sort((a, b) => a - b);
 }
 
-export function testQuickSort() {
-    const allTestingArrays = generateTestingArrays();
+export function testSortFunction(sortFunction) {
+  const allTestingArrays = generateTestingArrays();
 
-    for (let i = 0; i < allTestingArrays.length; i++) {
-        const javaScriptSortedArray = getJavascriptSortedArray(allTestingArrays[i].slice());
-        const [quickSortedArray, _] = quickSort(allTestingArrays[i].slice());
-        console.assert(arraysAreEqual(javaScriptSortedArray, quickSortedArray) === true, "Expected arraysAreEqual() to return True for quickSort");  
-    }
+  for (let i = 0; i < allTestingArrays.length; i++) {
+    const javaScriptSortedArray = getJavascriptSortedArray(allTestingArrays[i].slice());
+    const [sortedArray, _] = sortFunction(allTestingArrays[i].slice());
+    console.assert(arraysAreEqual(javaScriptSortedArray, sortedArray) === true, `Expected arraysAreEqual() to return True for ${sortFunction.name}`);
+  }
 
-    console.log("* * * Quick sort test complete! * * *");
-}
-
-export function testMergeSort() {
-    const allTestingArrays = generateTestingArrays();
-
-    for (let i = 0; i < allTestingArrays.length; i++) {
-        const javaScriptSortedArray =  getJavascriptSortedArray(allTestingArrays[i].slice());
-        const [mergeSortedArray, _] = mergeSort(allTestingArrays[i].slice());
-        console.assert(arraysAreEqual(javaScriptSortedArray, mergeSortedArray) === true, "Expected arraysAreEqual() to return True for mergeSort");  
-    }
-
-    console.log("* * * Merge sort test complete! * * *");
+  console.log(`* * * ${sortFunction.name} test complete! * * *`);
 }
